@@ -33,6 +33,14 @@ async function run() {
       res.send(result);
     });
 
+    // Get allJobs from DB
+
+    app.get("/all-jobs", async (req, res) => {
+      const jobData = req.body;
+      const result = await jobsCollection.find().toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 })
     console.log(
