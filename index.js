@@ -33,11 +33,18 @@ async function run() {
       res.send(result);
     });
 
-    // Get allJobs from DB
-
+    // Get allJobs data from DB
     app.get("/all-jobs", async (req, res) => {
       const jobData = req.body;
       const result = await jobsCollection.find().toArray();
+      res.send(result);
+    });
+
+    //get all jobs posted by a specific user / buyer
+    app.get("/jobs/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { "buyer.email": email };
+      const result = await jobsCollection.find(query).toArray();
       res.send(result);
     });
 
