@@ -33,8 +33,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const jobsCollection = client.db("solo-db").collection("All-jobs");
+    const bidsCollection = client.db("solo-db").collection("bids");
 
-    //generate jwt
+
 
     // generate jwt
     app.post("/jwt", async (req, res) => {
@@ -117,6 +118,13 @@ async function run() {
         updatedData,
         options
       );
+      res.send(result);
+    });
+
+    //save a bid data in db
+    app.post("/add-bid", async (req, res) => {
+      const bidData = req.body;
+      const result = await bidsCollection.insertOne(bidData);
       res.send(result);
     });
 
