@@ -177,14 +177,14 @@ async function run() {
     });
 
     //get all jobs
-    // app.get("/all-jobs", async (req, res) => {
-    //   const filter = req.query.filter;
-    //   let query = {};
-    //   if (filter) query.category = filter;
+    app.get("/all-jobs", async (req, res) => {
+      const filter = req.query.filter;
+      let query = {};
+      if (filter) query.category = filter;
 
-    //   const result = await jobsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+      const result = await jobsCollection.find(query).toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 })
