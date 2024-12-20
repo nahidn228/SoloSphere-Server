@@ -2,12 +2,20 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
-
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+    optionalSuccessStatus: 200,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@main.yolij.mongodb.net/?retryWrites=true&w=majority&appName=Main`
 
@@ -25,6 +33,36 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const jobsCollection = client.db("solo-db").collection("All-jobs");
+
+    //generate jwt
+
+    // generate jwt
+    app.post("/jwt", async (req, res) => {
+      const email = req.body;
+      // create token
+      const token = jwt.sign(email, process.env.SECRET_KEY, {
+        expiresIn: "365d",
+      });
+      // console.log(token);
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
+
+    // // logout || clear cookie from browser
+    // app.get("/logout", async (req, res) => {
+    //   res
+    //     .clearCookie("token", {
+    //       maxAge: 0,
+    //       secure: process.env.NODE_ENV === "production",
+    //       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    //     })
+    //     .send({ success: true });
+    // });
 
     //save a job data in db
     app.post("/add-job", async (req, res) => {
