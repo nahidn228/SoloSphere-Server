@@ -71,11 +71,11 @@ async function run() {
     });
 
     // Get allJobs data from DB
-    app.get("/all-jobs", async (req, res) => {
-      const jobData = req.body;
-      const result = await jobsCollection.find().toArray();
-      res.send(result);
-    });
+    // app.get("/all-jobs", async (req, res) => {
+    //   const jobData = req.body;
+    //   const result = await jobsCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     //get all jobs posted by a specific user / buyer
     app.get("/jobs/:email", async (req, res) => {
@@ -161,6 +161,30 @@ async function run() {
       const result = await bidsCollection.find(query).toArray();
       res.send(result);
     });
+
+    // Update bid status
+    app.patch("/update-bidStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      const { status } = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updated = {
+        $set: {
+          status: status,
+        },
+      };
+      const result = await bidsCollection.updateOne(filter, updated);
+      res.send(result);
+    });
+
+    //get all jobs
+    // app.get("/all-jobs", async (req, res) => {
+    //   const filter = req.query.filter;
+    //   let query = {};
+    //   if (filter) query.category = filter;
+
+    //   const result = await jobsCollection.find(query).toArray();
+    //   res.send(result);
+    // });
 
     // Send a ping to confirm a successful connection
     // await client.db('admin').command({ ping: 1 })
